@@ -15,8 +15,8 @@ namespace VetBlazorApp.Repository
 
         public async Task CreateAnimal(AnimalPassport animalPassport)
         {
-            await _context.AnimalPassports.AddAsync(animalPassport);
-            await _context.SaveChangesAsync();
+            _context.AnimalPassports.Add(animalPassport);
+            _context.SaveChanges();
         }
 
         public async Task<IEnumerable<AnimalPassport>> GetAnimalPassports()

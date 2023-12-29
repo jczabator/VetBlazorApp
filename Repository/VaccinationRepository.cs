@@ -14,8 +14,8 @@ namespace VetBlazorApp.Repository
 
         public async Task CreateVaccination(Vaccination vaccination)
         {
-            await _context.AddAsync(vaccination);
-            await _context.SaveChangesAsync();
+            _context.Add(vaccination);
+            _context.SaveChanges();
         }
 
         public async Task<IEnumerable<Vaccination>> GetVaccinations()
