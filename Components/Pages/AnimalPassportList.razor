@@ -1,0 +1,32 @@
+﻿@page "/animalPassportList"
+@using VetBlazorApp.DataLayer
+@using VetBlazorApp.UseCases.GetAnimalPassports
+@inject NavigationManager NavManager
+@inject IGetAnimalPassports GetAnimalPassportsUseCase
+
+<h3>AnimalPassportList</h3>
+<hr />
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="NavigateToCreateNewAnimalPassport">Create New Animal Passport</MudButton>
+<hr />
+<MudDataGrid Items="AnimalPassports">
+    <Columns>
+        <PropertyColumn Property="x => x.Name" Title="Animal Name" />
+        <PropertyColumn Property="x => x.Breed" Title="Animal Breed" />
+        <PropertyColumn Property="x => x.Age" />
+        <PropertyColumn Property="x => x.Gender" />
+    </Columns>
+</MudDataGrid>
+
+@code {
+    private IEnumerable<AnimalPassport> AnimalPassports = new List<AnimalPassport>();
+
+    async Task NavigateToCreateNewAnimalPassport()
+    {
+        NavManager.NavigateTo("/createAnimalPassport");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        AnimalPassports = await GetAnimalPassportsUseCase.GetAnimalPassports();
+    }
+}

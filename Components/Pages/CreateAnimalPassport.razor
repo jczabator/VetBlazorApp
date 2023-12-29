@@ -1,0 +1,47 @@
+﻿@page "/createAnimalPassport"
+@using VetBlazorApp.Components.Models
+@using VetBlazorApp.DataLayer
+@using VetBlazorApp.UseCases.CreateAnimal
+@inject ICreateAnimal CreateAnimalUseCase
+@inject NavigationManager NavManager
+
+<h3>CreateAnimalPassport</h3>
+<hr />
+
+<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Animal name" @bind-Value="model.Name" For="@(() => model.Name)" />
+                    <MudTextField Label="Animal breed" @bind-Value="model.Breed" For="@(() => model.Breed)" />
+                    <MudTextField Label="Age" @bind-Value="model.Age" For="@(() => model.Age)" />
+                    <MudTextField Label="Gender" @bind-Value="model.Gender" For="@(() => model.Gender)" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Create</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+    </MudGrid>
+</EditForm>
+@code {
+    RegisterAnimalPassportForm model = new RegisterAnimalPassportForm();
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+        StateHasChanged();
+        var animalPassport = new AnimalPassport
+        {
+            Name = model.Name,
+            Age = model.Age,
+            Breed = model.Breed,
+            Gender = model.Gender
+        };
+
+        await CreateAnimalUseCase.CreateAnimal(animalPassport);
+        NavManager.NavigateTo("/animalPassportList");
+    }
+}

@@ -1,0 +1,79 @@
+﻿@page "/createVaccination"
+@using VetBlazorApp.Components.Models
+@using VetBlazorApp.DataLayer
+@using VetBlazorApp.UseCases.CreateVaccination
+@using VetBlazorApp.UseCases.GetAnimalPassports
+@using VetBlazorApp.UseCases.GetVaccines
+@using VetBlazorApp.UseCases.GetVeterinarians
+@inject IGetAnimalPassports GetAnimalPassportUseCase
+@inject IGetVeterinarians GetVeterinariansUseCase
+@inject IGetVaccines GetVaccinesUseCase
+@inject ICreateVaccination CreateVaccinationUseCase
+@inject NavigationManager NavManager
+
+
+<h3>CreateVaccination</h3>
+<hr />
+<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudSelect T="int" @bind-Value="model.AnimalPassportId" Label="AnimalPassport" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var animalPassport in AnimalPassports)
+                        {
+                            <MudSelectItem Value="@animalPassport.Id">@animalPassport.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudSelect T="int" @bind-Value="model.VeterinarianId" Label="Veterinarian" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var veterinarian in Veterinarians)
+                        {
+                            <MudSelectItem Value="@veterinarian.Id">@veterinarian.LastName</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudSelect T="int" @bind-Value="model.VaccineRegistryId" Label="VaccineRegistry" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var vaccine in VaccineRegistry)
+                        {
+                            <MudSelectItem Value="@vaccine.Id">@vaccine.VaccineName</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudDatePicker Label="Vaccination Date" @bind-Date="model.Date" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    private IEnumerable<AnimalPassport> AnimalPassports = new List<AnimalPassport>();
+    private IEnumerable<Veterinarian> Veterinarians = new List<Veterinarian>();
+    private IEnumerable<VaccineRegistry> VaccineRegistry = new List<VaccineRegistry>();
+
+    RegisterVaccinationForm model = new RegisterVaccinationForm();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AnimalPassports = await GetAnimalPassportUseCase.GetAnimalPassports();
+        Veterinarians = await GetVeterinariansUseCase.GetVeterinarians();
+        VaccineRegistry = await GetVaccinesUseCase.GetVaccines();
+    }
+
+    private void OnValidSubmit(EditContext context)
+    {
+        StateHasChanged();
+        Vaccination vaccination = new Vaccination
+        {
+            AnimalPassportId = model.AnimalPassportId,
+            VaccineRegistryId = model.VaccineRegistryId,
+            VeterinarianId = model.VeterinarianId,
+            Date = model.Date!.Value
+        };
+
+        CreateVaccinationUseCase.CreateVaccination(vaccination);
+        NavManager.NavigateTo("/vaccinationList");
+    }
+}
