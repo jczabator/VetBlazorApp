@@ -1,0 +1,45 @@
+﻿@page "/createVaccine"
+@using VetBlazorApp.Components.Models
+@using VetBlazorApp.DataLayer
+@using VetBlazorApp.UseCases.CreateVaccineRegistryEntry
+@inject ICreateVaccineRegistryEntry CreateVaccineRegistryEntryUseCase
+@inject NavigationManager NavManager
+
+<h3>CreateVaccine</h3>
+<hr />
+
+<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Vaccine Name" @bind-Value="model.VaccineName" For="@(() => model.VaccineName)" />
+                    <MudTextField Label="Serial Number" @bind-Value="model.SerialNumber" For="@(() => model.SerialNumber)" />
+                    <MudDatePicker Label="Vaccine Expiration Date" @bind-Date="model.ExpiryDate" For="@(() => model.ExpiryDate)" />
+                </MudCardContent>
+                <MudCardActions>
+                  <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    RegisterVaccineForm model = new RegisterVaccineForm();
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+        StateHasChanged();
+        var vaccineRegistryEntry = new VaccineRegistry
+            {
+                VaccineName = model.VaccineName,
+                SerialNumber = model.SerialNumber,
+                ExpiryDate = model.ExpiryDate!.Value
+            };
+
+        await CreateVaccineRegistryEntryUseCase.CreateVaccineRegistryEntry(vaccineRegistryEntry);
+        NavManager.NavigateTo("/vaccineRegistryList");
+    }
+}

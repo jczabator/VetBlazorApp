@@ -12,10 +12,15 @@ namespace VetBlazorApp.Repository
             _context = context;
         }
 
+        public async Task CreateVeterinarian(Veterinarian veterinarian)
+        {
+            _context.Veterinarians.Add(veterinarian);
+            _context.SaveChanges();
+        }
+
         public async Task<IEnumerable<Veterinarian>> GetVeterinarians()
         {
-            return await _context.Veterinarians.ToListAsync();
-            
+            return await _context.Veterinarians.ToListAsync();            
         }
     }
 }

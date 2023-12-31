@@ -1,0 +1,31 @@
+﻿@page "/vaccineRegistryList"
+@using VetBlazorApp.DataLayer
+@using VetBlazorApp.UseCases.GetVaccines
+@inject NavigationManager NavManager
+@inject IGetVaccines GetVaccinesUseCase
+
+<h3>VaccineRegistryList</h3>
+<hr />
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="NavigateToCreateNewVaccine">Create New Vaccine</MudButton>
+<hr />
+<MudDataGrid Items="Vaccines">
+  <Columns>
+    <PropertyColumn Property="x => x.VaccineName" Title="Vaccine Name" />
+    <PropertyColumn Property="x => x.SerialNumber" Title="Serial Number" />
+    <PropertyColumn Property="x => x.ExpiryDate" Title="Expiration Date" />
+  </Columns>
+</MudDataGrid>
+
+@code {
+    private IEnumerable<VaccineRegistry> Vaccines = new List<VaccineRegistry>();
+
+    async Task NavigateToCreateNewVaccine()
+    {
+        NavManager.NavigateTo("/createVaccine");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Vaccines = await GetVaccinesUseCase.GetVaccines();
+    }
+}

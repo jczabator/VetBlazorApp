@@ -1,0 +1,45 @@
+﻿@page "/createVeterinarian"
+@using VetBlazorApp.Components.Models
+@using VetBlazorApp.DataLayer
+@using VetBlazorApp.UseCases.CreateVeterinarian
+@inject ICreateVeterinarian CreateVeterinarianUseCase
+@inject NavigationManager NavManager
+
+<h3>CreateVeterinarian</h3>
+<hr />
+
+<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+  <DataAnnotationsValidator />
+  <MudGrid>
+    <MudItem xs="12" sm="7">
+      <MudCard>
+        <MudCardContent>
+          <MudTextField Label="First Name" @bind-Value="model.FirstName" For="@(() => model.FirstName)" />
+          <MudTextField Label="Last Name" @bind-Value="model.LastName" For="@(() => model.LastName)" />
+          <MudTextField Label="Social Number" @bind-Value="model.SocialNumber" For="@(() => model.SocialNumber)" />
+        </MudCardContent>
+        <MudCardActions>
+          <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Create</MudButton>
+        </MudCardActions>
+      </MudCard>
+    </MudItem>
+  </MudGrid>
+</EditForm>
+
+@code {
+    RegisterVeterinarianFrom model = new RegisterVeterinarianFrom();
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+        StateHasChanged();
+        var veterinarian = new Veterinarian
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                SocialNumber = model.SocialNumber
+            };
+
+        await CreateVeterinarianUseCase.CreateVeterinarian(veterinarian);
+        NavManager.NavigateTo("/veterinarianList");
+    }
+}

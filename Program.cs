@@ -10,6 +10,8 @@ using VetBlazorApp.UseCases.GetVeterinarians;
 using VetBlazorApp.UseCases.GetVaccines;
 using VetBlazorApp.UseCases.CreateVaccination;
 using VetBlazorApp.UseCases.CreateAnimal;
+using VetBlazorApp.UseCases.CreateVeterinarian;
+using VetBlazorApp.UseCases.CreateVaccineRegistryEntry;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,8 @@ builder.Services.AddTransient<IVaccineRegistryRepository, VaccineRegistryReposit
 builder.Services.AddTransient<IGetVaccines, GetVaccinesUseCase>();
 builder.Services.AddTransient<ICreateVaccination, CreateVaccinationUseCase>();
 builder.Services.AddTransient<ICreateAnimal, CreateAnimalUseCase>();
+builder.Services.AddTransient<ICreateVeterinarian, CreateVeterinarianUseCase>();
+builder.Services.AddTransient<ICreateVaccineRegistryEntry, CreateVaccineRegistryEntryUseCase>();
 
 builder.Services.AddMudServices();
 
